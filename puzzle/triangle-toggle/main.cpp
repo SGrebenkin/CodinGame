@@ -7,7 +7,6 @@ using namespace std;
 
 // Returns true if point is inside the triangle
 bool pnpoly(const vector<pair<int, int>>& triag, int x, int y) {
-    bool c = false;
     int ctr = 0;
     for (int i = 0; i < triag.size(); ++i) {
         int iy = triag[i].first;
@@ -20,36 +19,38 @@ bool pnpoly(const vector<pair<int, int>>& triag, int x, int y) {
 
         int miny = min(iy, jy);
         int maxy = max(iy, jy);
-        // in the vertical limits
-        //if (y >= miny && y <= maxy) {
-            // point is a part of vertical line
-            if (ix == x && jx == x)
-                return true;
 
-            // point lies on horizontal line
-            if (iy == y && jy == iy && x >= min(ix, jx) && x <= max(ix, jx))
-                return true;
+        // point is a part of vertical line
+        if (ix == x && jx == x)
+            return true;
 
-            int res = (x - ix) * (jy - iy) - (y - iy) * (jx - ix);
-            if (res == 0)
-                return true;
+        // point lies on horizontal line
+        if (iy == y && jy == iy && x >= min(ix, jx) && x <= max(ix, jx))
+            return true;
 
-            // check also the double cross of the point
-            //if ((res < 0 && iy == miny) || (res > 0 && jy == miny))
-            //    c = !c;
-            if (res > 0)
-                ctr++;
-            else if (res < 0)
-                ctr--;
-        //}
+        // calculate vector product
+        int res = (x - ix) * (jy - iy) - (y - iy) * (jx - ix);
+        if (res == 0)
+            return true;
+
+        // save sign of vector product
+        // if the point is inside the triangle, all
+        // vector products should have the same sign
+        if (res > 0)
+            ctr++;
+        else if (res < 0)
+            ctr--;
     }
 
+    // check vector product after traversal
     if (abs(ctr) == 3)
         return true;
+
     return false;
 }
 
-int main() {
+int main()
+{
     int hi;
     int wi;
     cin >> hi >> wi; cin.ignore();
@@ -76,10 +77,10 @@ int main() {
         triag.push_back({ y_2, x_2 });
         triag.push_back({ y_3, x_3 });
 
-        int x_min = std::min({ x_1, x_2, x_3});//, [](const int s1, const int s2) { return s1 < s2; });
-        int y_min = std::min({ y_1, y_2, y_3});//, [](const int s1, const int s2) { return s1 < s2; });
-        int x_max = std::max({ x_1, x_2, x_3});
-        int y_max = std::max({ y_1, y_2, y_3});
+        int x_min = std::min({ x_1, x_2, x_3 });
+        int y_min = std::min({ y_1, y_2, y_3 });
+        int x_max = std::max({ x_1, x_2, x_3 });
+        int y_max = std::max({ y_1, y_2, y_3 });
 
         x_max = min(x_max, wi - 1);
         x_min = max(x_min, 0);
@@ -88,7 +89,6 @@ int main() {
 
         for (int i = x_min; i <= x_max; ++i)
             for (int j = y_min; j <= y_max; ++j) {
-                //std::cerr << j << "," << i << ": " << pnpoly(triag, i, j) << endl;
                 if (pnpoly(triag, i, j)) {
                     if (board[j][i] == '*')
                         board[j][i] = ' ';
@@ -105,13 +105,6 @@ int main() {
                 cout << " ";
         }
 
-        //if (style.compare("expanded") == 0)
         cout << endl;
     }
-
-
-    int res;
-    cin >> res;
-
-    return 0;
 }
